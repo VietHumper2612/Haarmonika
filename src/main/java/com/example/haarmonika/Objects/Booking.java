@@ -1,4 +1,4 @@
-package com.example.haarmonika;
+package com.example.haarmonika.Objects;
 
 public class Booking {
 }

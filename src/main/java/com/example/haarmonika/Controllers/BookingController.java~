@@ -1,9 +1,9 @@
-package com.example.haarmonika.Controllers;
+package com.example.haarmonika;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class BookingController {
+public class HelloController {
     @FXML
     private Label welcomeText;
 
