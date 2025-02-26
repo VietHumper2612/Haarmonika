@@ -1,14 +1,30 @@
 package com.example.haarmonika.Database;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private static final String URL = "jdbc:mysql://mysqldatabase-haarmonika.d.aivencloud.com:26851";
-    private static final String USER = "avnadmin";
-    private static final String PASSWORD = "AVNS_LG7XXvw6VuHvZHQ7fV1";
+    private static final String PROPERTIES_FILE = "src/main/resources/db.properties"; // Adjust this if necessary
+    private static String URL;
+    private static String USER;
+    private static String PASSWORD;
+
+    static {
+        Properties properties = new Properties();
+        try (FileInputStream input = new FileInputStream(PROPERTIES_FILE)) {
+            properties.load(input);
+            URL = properties.getProperty("db.url");
+            USER = properties.getProperty("db.user");
+            PASSWORD = properties.getProperty("db.password");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static DatabaseConnection instance;
     private Connection connection;
@@ -35,5 +51,4 @@ public class DatabaseConnection {
     public Connection getConnection() {
         return connection;
     }
-
 }
