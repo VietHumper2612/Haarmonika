@@ -8,9 +8,16 @@ public class Employee implements Person {
     String email;
     String password;
 
+    public Employee(String name, int id, String email, String password) {
+        this.name = name;
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
+
     public String name() {return name;}
     public Employee setName(String name) {this.name = name;return this;}
-    public int id() {return id;}
+    public int getId() {return id;}
     public Employee setId(int id) {this.id = id;return this;}
     public String email() {return email;}
     public Employee setEmail(String email) {this.email = email;return this;}

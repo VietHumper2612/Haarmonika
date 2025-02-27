@@ -6,6 +6,13 @@ public class Hairstyle {
     String style;
     int duration;
 
+    public Hairstyle(int price, int id, String style, int duration) {
+        this.price = price;
+        this.id = id;
+        this.style = style;
+        this.duration = duration;
+    }
+
     public int getPrice() {return price;}
     public void setPrice(int price) {this.price = price;}
     public int getId() {return id;}
