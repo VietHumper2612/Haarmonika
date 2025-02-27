@@ -7,6 +7,13 @@ public class Hairstyle {
     String style;
     int duration;
 
+    public Hairstyle(int price, int id, String style, int duration) {
+        this.price = price;
+        this.id = id;
+        this.style = style;
+        this.duration = duration;
+    }
+
     public Hairstyle(String name) {
         this.name = name;
     }
