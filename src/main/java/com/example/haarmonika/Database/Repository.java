@@ -15,7 +15,7 @@ public class Repository {
     }
 
     public boolean saveBooking(Booking booking) {
-        if (isDateAdnTimeAvailable(booking.getDate(), booking.getTime())) {
+        if (isDateAndTimeAvailable(booking.getDate(), booking.getTime())) {
             try {
                 String query = "INSERT INTO bookings (date, time, hairstyle, employee, customer) VALUES (?, ?, ?, ?, ?)";
                 PreparedStatement statement = connection.prepareStatement(query);
@@ -34,7 +34,7 @@ public class Repository {
         return false;
     }
 
-    private boolean isDateAdnTimeAvailable(String date, String time) {
+    private boolean isDateAndTimeAvailable(String date, String time) {
         try {
             String query = "SELECT * FROM bookings WHERE date = ? AND time = ?";
             PreparedStatement statement = connection.prepareStatement(query);
