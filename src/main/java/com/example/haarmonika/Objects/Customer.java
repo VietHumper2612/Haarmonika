@@ -17,6 +17,9 @@ public class Customer implements Person {
         this.gender = gender;
     }
 
+    public Customer(String customer) {
+    }
+
     public String getName() { return name;}
     public void setName(String name) { this.name = name;}
     public int getId() { return id;}

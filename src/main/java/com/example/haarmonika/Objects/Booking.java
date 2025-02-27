@@ -8,14 +8,14 @@ public class Booking {
     Employee employee;
     Customer customer;
 
-    public Booking(int id, String date, String time, Hairstyle hairstyle, Employee employee, Customer customer) {
-        this.id = id;
-        this.date = date;
-        this.time = time;
-        this.hairstyle = hairstyle;
-        this.employee = employee;
-        this.customer = customer;
-    }
+//    public Booking(int id, String date, String time, Hairstyle hairstyle, Employee employee, Customer customer) {
+//        this.id = id;
+//        this.date = date;
+//        this.time = time;
+//        this.hairstyle = hairstyle;
+//        this.employee = employee;
+//        this.customer = customer;
+//    }
 
     public int getId() {return id;}
     public void setId(int id) {this.id = id;}
