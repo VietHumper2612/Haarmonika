@@ -41,20 +41,12 @@ public class Repository {
             System.out.println("Error deleting booking: " + e.getMessage());
         }
     }
-}
-
-    private Connection connection;
-
-    public Repository() {
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
-        connection = databaseConnection.getConnection();
-    }
 
     public boolean saveBooking(Booking booking) {
         if (isDateAndTimeAvailable(booking.getDate(), booking.getTime())) {
             try {
                 String query = "INSERT INTO bookings (date, time, hairstyle, employee, customer) VALUES (?, ?, ?, ?, ?)";
-                PreparedStatement statement = connection.prepareStatement(query);
+                PreparedStatement statement = conn.prepareStatement(query);
                 statement.setString(1, booking.getDate());
                 statement.setString(2, booking.getTime());
                 statement.setString(3, booking.getHairstyle().getName());
@@ -73,7 +65,7 @@ public class Repository {
     private boolean isDateAndTimeAvailable(String date, String time) {
         try {
             String query = "SELECT * FROM bookings WHERE date = ? AND time = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, date);
             statement.setString(2, time);
             return !statement.executeQuery().next();
@@ -86,7 +78,7 @@ public class Repository {
     private void markDateAsUnavailable(String date) {
         try {
             String query = "INSERT INTO unavailable_dates (date) VALUES (?)";
-            PreparedStatement statement = connection.prepareStatement(query);
+            PreparedStatement statement = conn.prepareStatement(query);
             statement.setString(1, date);
             statement.executeUpdate();
         } catch (SQLException e) {
