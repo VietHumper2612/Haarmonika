@@ -1,11 +1,18 @@
 package com.example.haarmonika.Objects;
 
 public class Hairstyle {
+    String name;
     int price;
     int id;
     String style;
     int duration;
 
+    public Hairstyle(String name) {
+        this.name = name;
+    }
+
+    public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
     public int getPrice() {return price;}
     public void setPrice(int price) {this.price = price;}
     public int getId() {return id;}

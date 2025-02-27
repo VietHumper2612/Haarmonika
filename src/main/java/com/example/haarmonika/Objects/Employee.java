@@ -8,7 +8,11 @@ public class Employee implements Person {
     String email;
     String password;
 
-    public String name() {return name;}
+    public Employee(String name) {
+        this.name = name;
+    }
+
+    public String getName() {return name;}
     public Employee setName(String name) {this.name = name;return this;}
     public int id() {return id;}
     public Employee setId(int id) {this.id = id;return this;}
