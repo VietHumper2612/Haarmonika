@@ -3,10 +3,10 @@ package com.example.haarmonika.Objects;
 import com.example.haarmonika.Interfaces.Person;
 
 public class Employee implements Person {
-    String name;
-    int id;
-    String email;
-    String password;
+    private String name;
+    private int id;
+    private String email;
+    private String password;
 
     public Employee(String name, int id, String email, String password) {
         this.name = name;

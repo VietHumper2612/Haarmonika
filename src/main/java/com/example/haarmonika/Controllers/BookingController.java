@@ -27,11 +27,28 @@ public class BookingController {
 
     @FXML
     private void handleBooking() {
+        try {
+            Booking booking = createBookingFromInput();
+            boolean success = repository.saveBooking(booking);
+            statusLabel.setText(success ? "Booking successful!" : "Booking failed. Date and time is already booked.");
+        } catch (IllegalArgumentException e) {
+            statusLabel.setText("Input error: " + e.getMessage());
+        }
+
+    }
+
+
+    private Booking createBookingFromInput() {
         String date = dateField.getText();
         String time = timeField.getText();
         String hairstyle = hairstyleField.getText();
         String employee = employeeField.getText();
         String customer = customerField.getText();
+
+        // Enkel validering
+        if (date.isEmpty() || time.isEmpty() || hairstyle.isEmpty() || employee.isEmpty() || customer.isEmpty()) {
+            throw new IllegalArgumentException("All fields must be filled.");
+        }
 
         Booking booking = new Booking();
         booking.setDate(date);
@@ -40,11 +57,6 @@ public class BookingController {
         booking.setEmployee(new Employee(employee));
         booking.setCustomer(new Customer(customer));
 
-        boolean success = repository.saveBooking(booking);
-        if (success) {
-            statusLabel.setText("Booking successful!");
-        } else {
-            statusLabel.setText("Booking failed. Date and time is already booked.");
-        }
+        return booking;
     }
 }
