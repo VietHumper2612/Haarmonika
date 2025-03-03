@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import com.example.haarmonika.Database.DatabaseConnection;
 import com.example.haarmonika.Objects.Booking;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Repository {
 
@@ -83,6 +85,21 @@ public class Repository {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void deleteOldBookings(){
+        LocalDate fiveYearsAgo = LocalDate.now().minusYears(5);
+        String formattedDate = fiveYearsAgo.toString();
+
+        String sql = "DELETE FROM bookings WHERE date = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, formattedDate);
+            pstmt.executeUpdate();
+            System.out.println("Old bookings deleted successfully");
+        } catch (SQLException e) {
+            System.out.println("Error deleting old bookings: " + e.getMessage());
         }
     }
 }
