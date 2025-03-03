@@ -5,6 +5,7 @@ import com.example.haarmonika.Objects.Booking;
 import com.example.haarmonika.Objects.Customer;
 import com.example.haarmonika.Objects.Employee;
 import com.example.haarmonika.Objects.Hairstyle;
+import com.example.haarmonika.Usecase.Usecase;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -50,12 +51,9 @@ public class BookingController {
             throw new IllegalArgumentException("All fields must be filled.");
         }
 
-        Booking booking = new Booking();
-        booking.setDate(date);
-        booking.setTime(time);
-        booking.setHairstyle(new Hairstyle(hairstyle));
-        booking.setEmployee(new Employee(employee));
-        booking.setCustomer(new Customer(customer));
+        //kald use case
+        Usecase usecase = new Usecase();
+        Booking booking =  usecase.createBooking(date, time, hairstyle, employee, customer);
 
         return booking;
     }
