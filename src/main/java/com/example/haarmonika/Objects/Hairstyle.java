@@ -7,7 +7,8 @@ public class Hairstyle {
     String style;
     int duration;
 
-    public Hairstyle(int price, int id, String style, int duration) {
+    public Hairstyle(String name, int price, int id, String style, int duration) {
+        this.name = name;
         this.price = price;
         this.id = id;
         this.style = style;
@@ -16,6 +17,9 @@ public class Hairstyle {
 
     public Hairstyle(String name) {
         this.name = name;
+    }
+
+    public Hairstyle(Hairstyle hairstyle) {
     }
 
     public String getName() {return name;}

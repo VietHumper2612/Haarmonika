@@ -19,9 +19,6 @@ public class Employee implements Person {
         this.name = name;
     }
 
-    public Employee(Employee employee) {
-    }
-
     public String getName() {return name;}
     public Employee setName(String name) {this.name = name;return this;}
     public int getId() {return id;}

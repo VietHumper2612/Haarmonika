@@ -1,6 +1,6 @@
 package com.example.haarmonika.Controllers;
 
-import com.example.haarmonika.Database.DatabaseConnection;
+import com.example.haarmonika.Database.Repository;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,11 +11,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
-import com.example.haarmonika.Database.Repository;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class LoginController {
 
@@ -25,17 +20,23 @@ public class LoginController {
     @FXML
     private PasswordField passwordField;
 
+    private final Repository repository = new Repository();  // Moved this outside the method
+
     @FXML
     private void login(ActionEvent event) {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
-    private final Repository repository = new Repository();
+        if (loginValidation(username, password)) {
+            showAlert("Success", "Login successful!");
+            switchToBookingScreen(event);
+        }
+    }
 
-    public boolean login(String username, String password) {
+    private boolean loginValidation(String username, String password) {
         if (username.isEmpty() || password.isEmpty()) {
             showAlert("Error", "Username and password must not be empty.");
-            return;
+            return false;
         }
         return repository.validateUser(username, password);
     }
@@ -47,6 +48,7 @@ public class LoginController {
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setTitle("Booking");
             stage.show();
         } catch (IOException e) {
             showAlert("Error", "Failed to load booking screen.");
@@ -62,4 +64,3 @@ public class LoginController {
         alert.showAndWait();
     }
 }
-
