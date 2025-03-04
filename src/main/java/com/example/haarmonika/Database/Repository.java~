@@ -17,7 +17,7 @@ public class Repository {
     }
 
     public void editBooking(Booking booking) {
-        String sql = "UPDATE Booking SET date = ?, time = ?, hairstyle_id = ?, employee_id = ?, customer_id = ? WHERE id = ?";
+        String sql = "UPDATE bookings SET date = ?, time = ?, hairstyle_id = ?, employee_id = ?, customer_id = ? WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -35,7 +35,7 @@ public class Repository {
     }
 
     public void deleteBooking(int id) {
-        String sql = "DELETE FROM Booking WHERE id = ?";
+        String sql = "DELETE FROM bookings WHERE id = ?";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -93,7 +93,7 @@ public class Repository {
 
     public List<Hairstyle> getHairstyles() {
         List<Hairstyle> hairstyles = new ArrayList<>();
-        String query = "SELECT id, name, price, style, duration FROM Hairstyles";
+        String query = "SELECT id, name, price, style, duration FROM hairstyles";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -115,7 +115,7 @@ public class Repository {
 
     public List<Employee> getEmployees() {
         List<Employee> employees = new ArrayList<>();
-        String query = "SELECT id, name, email, password FROM Employees";
+        String query = "SELECT id, name, email, password FROM employees";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
@@ -137,7 +137,7 @@ public class Repository {
 
     public List<Customer> getCustomers() {
         List<Customer> customers = new ArrayList<>();
-        String query = "SELECT id, name, email, password, gender FROM Customers";
+        String query = "SELECT id, name, email, password, gender FROM customers";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);

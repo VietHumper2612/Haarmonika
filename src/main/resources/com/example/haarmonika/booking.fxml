@@ -4,6 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.example.haarmonika.Controllers.BookingController">
     <children>
@@ -35,8 +37,31 @@
             </HBox>
 
             <HBox spacing="10">
-                <Label text="Customer:"/>
-                <ComboBox fx:id="customerComboBox"/>
+                <Label text="Customer Name:"/>
+                <TextField fx:id="customerNameField"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Customer Email:"/>
+                <TextField fx:id="customerEmailField"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Password:"/>
+                <PasswordField fx:id="passwordField"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Gender:"/>
+                <ComboBox fx:id="genderComboBox">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Male" />
+                            <String fx:value="Female" />
+                            <String fx:value="Other" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
             </HBox>
 
             <Button fx:id="bookButton" text="Book Appointment" onAction="#handleBooking"/>

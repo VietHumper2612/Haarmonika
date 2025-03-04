@@ -49,7 +49,7 @@ public class Repository {
 
     public boolean saveBooking(Booking booking) {
         if (isDateAndTimeAvailable(booking.getDate(), booking.getTime())) {
-            String query = "INSERT INTO bookings (date, time, hairstyle, employee, customer) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO bookings (date, time, hairstyle_id, employee_id, customer_id) VALUES (?, ?, ?, ?, ?)";
             try (Connection conn = getConnection();
                  PreparedStatement statement = conn.prepareStatement(query)) {
                 statement.setString(1, booking.getDate());

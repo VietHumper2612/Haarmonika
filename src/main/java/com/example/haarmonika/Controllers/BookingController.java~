@@ -40,7 +40,6 @@ public class BookingController {
         loadHairstyles();
         loadEmployees();
         loadGenderOptions();
-        loadGenderOptions();
     }
 
     private void loadTimeSlots() {
