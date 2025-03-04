@@ -38,8 +38,7 @@ public class LoginController {
 
                 if (resultSet.next()) {
                     showAlert("Success", "Login successful!");
-                    // Navigate to the next scene (uncomment and implement)
-                    // navigateToDashboard();
+
                 } else {
                     showAlert("Error", "Invalid username or password.");
                 }
