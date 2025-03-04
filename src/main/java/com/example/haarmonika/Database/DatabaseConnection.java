@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private static final String PROPERTIES_FILE = "src/main/resources/db.properties"; // Adjust this if necessary
+    private static final String PROPERTIES_FILE = "src/main/resources/db.properties";
     private static String URL;
     private static String USER;
     private static String PASSWORD;

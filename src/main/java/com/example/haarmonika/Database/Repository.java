@@ -15,6 +15,19 @@ public class Repository {
 
     private static final Connection conn = DatabaseConnection.getInstance().getConnection();
 
+    public boolean validateUser(String username, String password) {
+        String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet resultSet = pstmt.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static void editBooking(Booking booking) {
         String sql = "UPDATE Booking SET date = ?, time = ?, hairstyle_id = ?, employee_id = ?, customer_id = ? WHERE id = ?";
 
