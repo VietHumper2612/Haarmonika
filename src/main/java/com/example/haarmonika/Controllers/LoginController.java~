@@ -37,7 +37,7 @@ public class LoginController {
 
         if (databaseConnection != null) {
             try {
-                String mysqlUser = "SELECT * FROM users WHERE username = ? AND password = ?";
+                String mysqlUser = "SELECT * FROM user WHERE username = ? AND password = ?";
                 PreparedStatement PPSM = databaseConnection.getConnection().prepareStatement(mysqlUser);
                 PPSM.setString(1, username);
                 PPSM.setString(2, password);
