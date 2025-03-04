@@ -1,16 +1,29 @@
 package com.example.haarmonika.Controllers;
 
 import com.example.haarmonika.Database.DatabaseConnection;
-
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginController {
 
-    public boolean login(String username, String password) {
+    @FXML
+    private TextField usernameField;
+
+    @FXML
+    private PasswordField passwordField;
+
+    public void login() {
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+
         if (username.isEmpty() || password.isEmpty()) {
-            throw new IllegalArgumentException("Username and password must not be empty.");
+            showAlert("Error", "Username and password must not be empty.");
+            return;
         }
 
         DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
@@ -22,12 +35,26 @@ public class LoginController {
                 PPSM.setString(1, username);
                 PPSM.setString(2, password);
                 ResultSet resultSet = PPSM.executeQuery();
-                return resultSet.next();
 
+                if (resultSet.next()) {
+                    showAlert("Success", "Login successful!");
+                    // Navigate to the next scene (uncomment and implement)
+                    // navigateToDashboard();
+                } else {
+                    showAlert("Error", "Invalid username or password.");
+                }
             } catch (SQLException e) {
-                System.out.println("Database error: " + e.getMessage());
+                showAlert("Database Error", e.getMessage());
             }
+        } else {
+            showAlert("Error", "Database connection failed.");
         }
-        return false;
+    }
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -16,7 +16,6 @@ module com.example.haarmonika {
     opens com.example.haarmonika.Database to javafx.fxml;
     exports com.example.haarmonika;
     exports com.example.haarmonika.Controllers;
-    exports com.example.haarmonika.Database;
     opens com.example.haarmonika.Controllers to javafx.fxml;
     exports com.example.haarmonika.Objects;
     opens com.example.haarmonika.Objects to javafx.fxml;
