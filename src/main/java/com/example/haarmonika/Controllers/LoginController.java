@@ -11,6 +11,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.io.IOException;
+import com.example.haarmonika.Database.Repository;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,34 +30,14 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
 
+    private final Repository repository = new Repository();
+
+    public boolean login(String username, String password) {
         if (username.isEmpty() || password.isEmpty()) {
             showAlert("Error", "Username and password must not be empty.");
             return;
         }
-
-        DatabaseConnection databaseConnection = DatabaseConnection.getInstance();
-
-        if (databaseConnection != null) {
-            try {
-                String mysqlUser = "SELECT * FROM users WHERE username = ? AND password = ?";
-                PreparedStatement PPSM = databaseConnection.getConnection().prepareStatement(mysqlUser);
-                PPSM.setString(1, username);
-                PPSM.setString(2, password);
-                ResultSet resultSet = PPSM.executeQuery();
-
-                if (resultSet.next()) {
-                    showAlert("Success", "Login successful!");
-                    switchToBookingScreen(event);
-
-                } else {
-                    showAlert("Error", "Invalid username or password.");
-                }
-            } catch (SQLException e) {
-                showAlert("Database Error", e.getMessage());
-            }
-        } else {
-            showAlert("Error", "Database connection failed.");
-        }
+        return repository.validateUser(username, password);
     }
 
     private void switchToBookingScreen(ActionEvent event) {
@@ -80,3 +62,4 @@ public class LoginController {
         alert.showAndWait();
     }
 }
+

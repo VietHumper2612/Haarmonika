@@ -6,6 +6,7 @@ import com.example.haarmonika.Objects.Customer;
 import com.example.haarmonika.Objects.Employee;
 import com.example.haarmonika.Objects.Hairstyle;
 import javafx.collections.FXCollections;
+import com.example.haarmonika.Usecase.Usecase;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -131,6 +132,9 @@ public class BookingController {
         booking.setHairstyle(selectedHairstyle);
         booking.setEmployee(selectedEmployee);
         booking.setCustomer(customer);
+        //kald use case
+        Usecase usecase = new Usecase();
+        Booking booking =  usecase.createBooking(date, time, hairstyle, employee, customer);
 
         return booking;
     }

@@ -8,12 +8,27 @@ import java.sql.SQLException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Repository {
     private final DatabaseConnection databaseConnection = DatabaseConnection.getInstance(); // Get the singleton instance
 
     public Connection getConnection() {
         return databaseConnection.getConnection();
+    }
+
+    public boolean validateUser(String username, String password) {
+        String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setString(2, password);
+            ResultSet resultSet = pstmt.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+            return false;
+        }
     }
 
     public void editBooking(Booking booking) {
@@ -156,5 +171,20 @@ public class Repository {
             e.printStackTrace();
         }
         return customers;
+    }
+
+    public void deleteOldBookings(){
+        LocalDate fiveYearsAgo = LocalDate.now().minusYears(5);
+        String formattedDate = fiveYearsAgo.toString();
+
+        String sql = "DELETE FROM bookings WHERE date = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, formattedDate);
+            pstmt.executeUpdate();
+            System.out.println("Old bookings deleted successfully");
+        } catch (SQLException e) {
+            System.out.println("Error deleting old bookings: " + e.getMessage());
+        }
     }
 }
