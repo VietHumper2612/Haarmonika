@@ -237,4 +237,18 @@ public class Repository {
             System.out.println("Error deleting old bookings: " + e.getMessage());
         }
     }
+
+    public String getUserRole(String username) {
+        String sql = "SELECT role FROM users WHERE username = ?";
+        try (PreparedStatement pstmt = getConnection().prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getString("role");
+            }
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+        return null;
+    }
 }

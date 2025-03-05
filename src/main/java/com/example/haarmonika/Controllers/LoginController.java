@@ -28,8 +28,9 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (loginValidation(username, password)) {
+            String role = repository.getUserRole(username);
             showAlert("Success", "Login successful!");
-            switchToBookingScreen(event);
+            switchScreenByRole(event, role);
         }
     }
 
@@ -41,17 +42,22 @@ public class LoginController {
         return repository.validateUser(username, password);
     }
 
-    private void switchToBookingScreen(ActionEvent event) {
+    private void switchScreenByRole(ActionEvent event, String role) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/haarmonika/booking.fxml"));
+            FXMLLoader loader;
+            if ("admin".equalsIgnoreCase(role)) {
+                loader = new FXMLLoader(getClass().getResource("/com/example/haarmonika/admin.fxml"));
+            } else {
+                loader = new FXMLLoader(getClass().getResource("/com/example/haarmonika/booking.fxml"));
+            }
             Parent root = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Booking");
+            stage.setTitle(role.equalsIgnoreCase("admin") ? "Admin Dashboard" : "Booking");
             stage.show();
         } catch (IOException e) {
-            showAlert("Error", "Failed to load booking screen.");
+            showAlert("Error", "Failed to load the appropriate screen.");
             e.printStackTrace();
         }
     }

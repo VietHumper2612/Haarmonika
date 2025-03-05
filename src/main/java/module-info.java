@@ -11,6 +11,7 @@ module com.example.haarmonika {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires jasypt;
 
     opens com.example.haarmonika to javafx.fxml;
     opens com.example.haarmonika.Database to javafx.fxml;
