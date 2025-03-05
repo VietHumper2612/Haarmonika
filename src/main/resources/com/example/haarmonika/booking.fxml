@@ -37,35 +37,14 @@
             </HBox>
 
             <HBox spacing="10">
-                <Label text="Customer Name:"/>
-                <TextField fx:id="customerNameField"/>
-            </HBox>
-
-            <HBox spacing="10">
-                <Label text="Customer Email:"/>
-                <TextField fx:id="customerEmailField"/>
-            </HBox>
-
-            <HBox spacing="10">
-                <Label text="Password:"/>
-                <PasswordField fx:id="passwordField"/>
-            </HBox>
-
-            <HBox spacing="10">
-                <Label text="Gender:"/>
-                <ComboBox fx:id="genderComboBox">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Male" />
-                            <String fx:value="Female" />
-                            <String fx:value="Other" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
+                <Label text="Customer:"/>
+                <ComboBox fx:id="customerComboBox"/>
             </HBox>
 
             <Button fx:id="bookButton" text="Book Appointment" onAction="#handleBooking"/>
 
+            <!-- New button to show current bookings -->
+            <Button text="Show Current Bookings" onAction="#showCurrentBookings"/>
         </VBox>
     </children>
 </AnchorPane>

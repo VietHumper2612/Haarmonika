@@ -15,6 +15,7 @@ public class BookingApp extends Application {
         Repository repository = new Repository();
         ScheduledTask scheduledTask = new ScheduledTask(repository);
         scheduledTask.start();
+
         FXMLLoader fxmlLoader = new FXMLLoader(BookingApp.class.getResource("login.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Login");
