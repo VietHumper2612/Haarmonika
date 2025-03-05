@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.haarmonika.Controllers.ManageUsersController">
+            fx:controller="com.example.haarmonika.Controllers.ManageCostumersController">
     <children>
         <VBox alignment="CENTER" spacing="10">
             <Label text="Manage Users" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
@@ -19,9 +19,9 @@
             </TableView>
 
             <HBox spacing="10">
-                <Button text="Add User" onAction="#handleAddUser"/>
-                <Button text="Edit User" onAction="#handleUpdateUser"/>
-                <Button text="Delete User" onAction="#handleDeleteUser"/>
+                <Button text="Add costumer" onAction="#handleAddCustomer"/>
+                <Button text="Edit costumer" onAction="#handleUpdateCustomer"/>
+                <Button text="Delete costumer" onAction="#handleDeleteCustomer"/>
             </HBox>
         </VBox>
     </children>

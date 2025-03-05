@@ -297,5 +297,46 @@ public class Repository {
     }
 
 
+    public boolean addCustomer(String name, String email, String phone) {
+        String query = "INSERT INTO customers (name, email, phone) VALUES (?, ?, ?)";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, name);
+            statement.setString(2, email);
+            statement.setString(3, phone);
+            int rowsInserted = statement.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
+    public boolean deleteCustomer(String email) {
+        String query = "DELETE FROM customers WHERE email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, email);
+            int rowsDeleted = statement.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean editCustomer(String name, String email, String phone) {
+        String query = "UPDATE customers SET name = ?, phone = ? WHERE email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement statement = conn.prepareStatement(query)) {
+            statement.setString(1, name);
+            statement.setString(2, phone);
+            statement.setString(3, email);
+            int rowsUpdated = statement.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
