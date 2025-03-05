@@ -7,7 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class ManageCostumersController {
+public class ManageCustomersController {
 
     private final Repository repository = new Repository();
 
@@ -40,6 +40,7 @@ public class ManageCostumersController {
             return;
         }
 
+        // Add customer logic (you can implement your add logic in the Repository)
         boolean success = repository.addCustomer(name, email, phone);
 
         if (success) {
@@ -78,6 +79,7 @@ public class ManageCostumersController {
             return;
         }
 
+        // Update customer logic
         boolean success = repository.editCustomer(name, email, phone);
 
         if (success) {
