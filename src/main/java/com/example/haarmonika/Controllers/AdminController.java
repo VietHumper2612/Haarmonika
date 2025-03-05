@@ -30,7 +30,7 @@ public class AdminController {
     @FXML
     public void handleViewReports(ActionEvent actionEvent) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/haarmonika/ViewReports.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/haarmonika/viewreports.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("View Reports");
