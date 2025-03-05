@@ -1,0 +1,30 @@
+package com.example.haarmonika;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class TimeConverter {
+
+    public static String convertTo24HourFormat(String time12HourFormat) {
+        try {
+            // Define the 12-hour format with AM/PM
+            SimpleDateFormat sdf12 = new SimpleDateFormat("h:mm a");
+            // Parse the 12-hour format string into a Date object
+            Date date = sdf12.parse(time12HourFormat);
+
+            // Define the 24-hour format
+            SimpleDateFormat sdf24 = new SimpleDateFormat("HH:mm:ss");
+            // Return the formatted time in 24-hour format
+            return sdf24.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void main(String[] args) {
+        String time12Hour = "2:00 PM";  // Example input time
+        String time24Hour = convertTo24HourFormat(time12Hour);
+        System.out.println("Converted time: " + time24Hour);  // Output: 14:00:00
+    }
+}

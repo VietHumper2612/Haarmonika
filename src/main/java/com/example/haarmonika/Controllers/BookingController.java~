@@ -1,20 +1,23 @@
 package com.example.haarmonika.Controllers;
 
 import com.example.haarmonika.Database.Repository;
+import com.example.haarmonika.Database.DatabaseConnection;
 import com.example.haarmonika.Objects.Booking;
 import com.example.haarmonika.Objects.Customer;
 import com.example.haarmonika.Objects.Employee;
 import com.example.haarmonika.Objects.Hairstyle;
 import javafx.collections.FXCollections;
-import com.example.haarmonika.Usecase.Usecase;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 
 public class BookingController {
+
     @FXML
     private DatePicker datePicker;
     @FXML
@@ -24,121 +27,85 @@ public class BookingController {
     @FXML
     private ComboBox<Employee> employeeComboBox;
     @FXML
-    private TextField customerNameField;
+    private ComboBox<Customer> customerComboBox;
     @FXML
-    private TextField customerEmailField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private ComboBox<String> genderComboBox;
-    @FXML
-    private Label statusLabel;
+    private Button bookButton;
+
+    private ObservableList<String> availableTimes = FXCollections.observableArrayList("10:00", "11:00", "12:00", "13:00");
 
     private final Repository repository = new Repository();
 
     @FXML
-    private void initialize() {
-        loadTimeSlots();
-        loadHairstyles();
-        loadEmployees();
-        loadGenderOptions();
-        loadGenderOptions();
-    }
-
-    private void loadTimeSlots() {
-        timeComboBox.setItems(FXCollections.observableArrayList("10:00", "11:00", "12:00", "13:00", "14:00"));
-    }
-
-    private void loadHairstyles() {
-        List<Hairstyle> hairstyles = repository.getHairstyles();
-        hairstyleComboBox.setItems(FXCollections.observableArrayList(hairstyles));
-
-        hairstyleComboBox.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Hairstyle hairstyle, boolean empty) {
-                super.updateItem(hairstyle, empty);
-                setText(empty || hairstyle == null ? null : hairstyle.getName());
-            }
-        });
-        hairstyleComboBox.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Hairstyle hairstyle, boolean empty) {
-                super.updateItem(hairstyle, empty);
-                setText(empty || hairstyle == null ? null : hairstyle.getName());
-            }
-        });
-    }
-
-    private void loadEmployees() {
-        List<Employee> employees = repository.getEmployees();
-        employeeComboBox.setItems(FXCollections.observableArrayList(employees));
-
-        employeeComboBox.setCellFactory(param -> new ListCell<>() {
-            @Override
-            protected void updateItem(Employee employee, boolean empty) {
-                super.updateItem(employee, empty);
-                setText(empty || employee == null ? null : employee.getName());
-            }
-        });
-        employeeComboBox.setButtonCell(new ListCell<>() {
-            @Override
-            protected void updateItem(Employee employee, boolean empty) {
-                super.updateItem(employee, empty);
-                setText(empty || employee == null ? null : employee.getName());
-            }
-        });
-    }
-
-    private void loadGenderOptions() {
-        genderComboBox.setItems(FXCollections.observableArrayList("Male", "Female", "Other"));
+    public void initialize() {
+        timeComboBox.setItems(availableTimes);
+        hairstyleComboBox.setItems(repository.loadHairstyles());
+        employeeComboBox.setItems(repository.loadEmployees());
+        customerComboBox.setItems(repository.loadCustomers());
     }
 
     @FXML
-    private void handleBooking() {
-        try {
-            Booking booking = createBookingFromInput();
-            boolean success = repository.addBooking(booking);
-            statusLabel.setText(success ? "Booking successful!" : "Booking failed. Date and time already booked.");
-        } catch (IllegalArgumentException e) {
-            statusLabel.setText("Input error: " + e.getMessage());
+    private void handleBooking(ActionEvent event) {
+        if (datePicker.getValue() == null || timeComboBox.getValue() == null ||
+                hairstyleComboBox.getValue() == null || employeeComboBox.getValue() == null || customerComboBox.getValue() == null) {
+            showAlert("Error", "Please fill in all the fields.");
+            return;
+        }
+
+        String date = datePicker.getValue().toString();
+        String time = timeComboBox.getValue();
+        Hairstyle hairstyle = hairstyleComboBox.getValue();
+        Employee employee = employeeComboBox.getValue();
+        Customer customer = customerComboBox.getValue();
+
+        Booking booking = new Booking();
+        booking.setDate(date);
+        booking.setTime(time);
+        booking.setHairstyle(hairstyle);
+        booking.setEmployee(employee);
+        booking.setCustomer(customer);
+
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+            String query = "INSERT INTO bookings (date, time, hairstyle_id, employee_id, customer_id) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, date);
+            statement.setString(2, time);
+            statement.setInt(3, hairstyle.getId());
+            statement.setInt(4, employee.getId());
+            statement.setInt(5, customer.getId());
+
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                showAlert("Success", "Booking successfully created!");
+            } else {
+                showAlert("Error", "Failed to create booking.");
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            showAlert("Error", "Database error: " + e.getMessage());
         }
     }
 
-    private Booking createBookingFromInput() {
-
-        LocalDate selectedDate = datePicker.getValue();
-        String selectedTime = timeComboBox.getValue();
-        Hairstyle selectedHairstyle = hairstyleComboBox.getValue();
-        Employee selectedEmployee = employeeComboBox.getValue();
-
-
-        // Get customer details from text fields
-        String customerName = customerNameField.getText();
-        String customerEmail = customerEmailField.getText();
-        String password = passwordField.getText();
-        String gender = genderComboBox.getValue();
-
-        // Validate inputs
-        if (selectedDate == null || selectedTime == null || selectedHairstyle == null || selectedEmployee == null || customerName.isEmpty() || customerEmail.isEmpty() || password.isEmpty() || gender == null) {
-            throw new IllegalArgumentException("All fields must be selected and customer details must not be empty.");
-        }
-
-        // Create a new Customer object (Ensure customer ID is set, maybe auto-generated by DB or handled elsewhere)
-        Customer customer = new Customer();
-        customer.setName(customerName);
-        customer.setEmail(customerEmail);
-        customer.setPassword(password);
-        customer.setGender(gender);
-
-        // If the ID should be set manually, add that logic here
-        // Example: customer.setId(generateCustomerId());
-
-        // Ensure that Usecase's createBooking method works correctly
-        Usecase usecase = new Usecase();
-        Booking booking = usecase.createBooking(selectedDate, selectedTime, selectedHairstyle, selectedEmployee, customer);
-
-        return booking;
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
-}
+
+    @FXML
+    private void showCurrentBookings() {
+        List<Booking> bookings = repository.getAllBookings();
+
+        StringBuilder bookingsText = new StringBuilder();
+        bookingsText.append("Current Bookings:\n\n");
+
+        for (Booking booking : bookings) {
+            bookingsText.append("Date: ").append(booking.getDate())
+                    .append(", Time: ").append(booking.getTime())
+                    .append("\nHairstyle: ").append(booking.getHairstyle().getName())
+                    .append(", Employee: ").append(booking.getEmployee().getName())
+                    .append(", Customer: ").append(booking.getCustomer().getName())
+                    .append("\n\n");
+        }
+}}

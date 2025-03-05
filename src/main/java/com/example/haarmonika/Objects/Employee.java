@@ -21,6 +21,10 @@ public class Employee implements Person {
 
     public Employee(Employee employee) {
     }
+@Override
+    public String toString(){
+        return name;
+    }
 
     public String getName() {return name;}
     public Employee setName(String name) {this.name = name;return this;}

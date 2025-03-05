@@ -1,14 +1,16 @@
 package com.example.haarmonika.Database;
 
 import com.example.haarmonika.Objects.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
 
 public class Repository {
     private final DatabaseConnection databaseConnection = DatabaseConnection.getInstance(); // Get the singleton instance
@@ -28,6 +30,63 @@ public class Repository {
             System.out.println("Database error: " + e.getMessage());
             return false;
         }
+    }
+
+    public ObservableList<Hairstyle> loadHairstyles() {
+        ObservableList<Hairstyle> hairstyles = FXCollections.observableArrayList();
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+            String query = "SELECT * FROM hairstyles";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                int price = resultSet.getInt("price");
+                String style = resultSet.getString("style");
+                int duration = resultSet.getInt("duration");
+                hairstyles.add(new Hairstyle(name, price, id, style, duration));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return hairstyles;
+    }
+
+    public ObservableList<Employee> loadEmployees() {
+        ObservableList<Employee> employees = FXCollections.observableArrayList();
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+            String query = "SELECT * FROM employees";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                employees.add(new Employee(name, id, email, "")); // Assuming no extra info needed for now
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employees;
+    }
+
+    public ObservableList<Customer> loadCustomers() {
+        ObservableList<Customer> customers = FXCollections.observableArrayList();
+        try (Connection connection = DatabaseConnection.getInstance().getConnection()) {
+            String query = "SELECT * FROM customers";
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String gender = resultSet.getString("gender");
+                customers.add(new Customer(name, id, email, "", gender)); // Assuming no extra info needed for now
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
     }
 
     public void editBooking(Booking booking) {
@@ -61,48 +120,7 @@ public class Repository {
         }
     }
 
-    public boolean addBooking(Booking booking) throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-
-        try {
-            // Get the database connection
-            connection = DatabaseConnection.getInstance().getConnection(); // Assuming you have a method to get the DB connection
-
-            // SQL query to insert a new booking
-            String sql = "INSERT INTO bookings (date, time, hairstyle_id, employee_id, customer_id) "
-                    + "VALUES (?, ?, ?, ?, ?)";
-
-            // Prepare the statement
-            preparedStatement = connection.prepareStatement(sql);
-
-            // Set the parameters for the query
-            preparedStatement.setString(1, booking.getDate());
-            preparedStatement.setString(2, booking.getTime());
-            preparedStatement.setInt(3, booking.getHairstyle().getId()); // Assuming hairstyle has an 'id'
-            preparedStatement.setInt(4, booking.getEmployee().getId()); // Assuming employee has an 'id'
-            preparedStatement.setInt(5, booking.getCustomer().getId()); // Assuming customer has an 'id'
-
-            // Execute the insert query
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace(); // Handle exceptions
-            throw new SQLException("Failed to add booking", e);
-        } finally {
-            // Close the resources
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
-        }
-        return false;
-    }
-
     private boolean isNewCustomer(Customer customer) {
-        // Check if the customer already exists in the database
         String query = "SELECT id FROM customers WHERE email = ?";
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
@@ -115,21 +133,6 @@ public class Repository {
         return false;
     }
 
-    private void saveCustomer(Customer customer) {
-        String query = "INSERT INTO customers (name, email, password, gender) VALUES (?, ?, ?, ?)";
-        try (Connection conn = getConnection();
-             PreparedStatement statement = conn.prepareStatement(query)) {
-
-            statement.setString(1, customer.getName());
-            statement.setString(2, customer.getEmail());
-            statement.setString(3, customer.getPassword());
-            statement.setString(4, customer.getGender());
-
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     private boolean isDateAndTimeAvailable(String date, String time) {
         String query = "SELECT * FROM bookings WHERE date = ? AND time = ?";
@@ -155,72 +158,43 @@ public class Repository {
         }
     }
 
-    public List<Hairstyle> getHairstyles() {
-        List<Hairstyle> hairstyles = new ArrayList<>();
-        String query = "SELECT id, name, price, style, duration FROM hairstyles";
+    public List<Booking> getAllBookings() {
+        List<Booking> bookings = new ArrayList<>();
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        String query = "SELECT bookings.id AS booking_id, bookings.date, bookings.time, " +
+                "hairstyles.name AS hairstyle_name, employees.name AS employee_name, " +
+                "customers.name AS customer_name " +
+                "FROM bookings " +
+                "JOIN hairstyles ON bookings.hairstyle_id = hairstyles.id " +
+                "JOIN employees ON bookings.employee_id = employees.id " +
+                "JOIN customers ON bookings.customer_id = customers.id";
 
-            while (rs.next()) {
-                hairstyles.add(new Hairstyle(
-                        rs.getString("name"),
-                        rs.getInt("price"),
-                        rs.getInt("id"),
-                        rs.getString("style"),
-                        rs.getInt("duration")
-                ));
+        try (Connection connection = DatabaseConnection.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                String date = resultSet.getString("date");
+                String time = resultSet.getString("time");
+                String hairstyleName = resultSet.getString("hairstyle_name");
+                String employeeName = resultSet.getString("employee_name");
+                String customerName = resultSet.getString("customer_name");
+
+
+                Booking booking = new Booking();
+                booking.setDate(date);
+                booking.setTime(time);
+                booking.setHairstyle(new Hairstyle(hairstyleName));
+                booking.setEmployee(new Employee(employeeName));
+                booking.setCustomer(new Customer(customerName, 0, "", "", ""));
+
+                bookings.add(booking);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return hairstyles;
-    }
 
-    public List<Employee> getEmployees() {
-        List<Employee> employees = new ArrayList<>();
-        String query = "SELECT id, name, email, password FROM employees";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                employees.add(new Employee(
-                        rs.getString("name"),
-                        rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("password")
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return employees;
-    }
-
-    public List<Customer> getCustomers() {
-        List<Customer> customers = new ArrayList<>();
-        String query = "SELECT id, name, email, password, gender FROM customers";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                customers.add(new Customer(
-                        rs.getString("name"),
-                        rs.getInt("id"),
-                        rs.getString("email"),
-                        rs.getString("password"),
-                        rs.getString("gender")
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return customers;
+        return bookings;
     }
 
     public void deleteOldBookings(){
