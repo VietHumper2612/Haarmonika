@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.haarmonika.Controllers.ManageUsersController">
+    <children>
+        <VBox alignment="CENTER" spacing="10">
+            <Label text="Manage Users" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <TableView fx:id="userTable">
+                <columns>
+                    <TableColumn text="ID" fx:id="colId"/>
+                    <TableColumn text="Name" fx:id="colName"/>
+                    <TableColumn text="Role" fx:id="colRole"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="10">
+                <Button text="Add User" onAction="#handleAddUser"/>
+                <Button text="Edit User" onAction="#handleUpdateUser"/>
+                <Button text="Delete User" onAction="#handleDeleteUser"/>
+            </HBox>
+        </VBox>
+    </children>
+</AnchorPane>
