@@ -45,14 +45,20 @@ public class BookingController {
 
     @FXML
     private void handleBooking(ActionEvent event) {
+
         if (datePicker.getValue() == null || timeComboBox.getValue() == null ||
                 hairstyleComboBox.getValue() == null || employeeComboBox.getValue() == null || customerComboBox.getValue() == null) {
             showAlert("Error", "Please fill in all the fields.");
             return;
         }
-
         String date = datePicker.getValue().toString();
         String time = timeComboBox.getValue();
+
+        if (!repository.isDateAndTimeAvailable(date, time)) {
+            showAlert("Error", "The selected date and time are already booked. Please choose another.");
+            return;  // Don't proceed with booking if it's unavailable
+        }
+
         Hairstyle hairstyle = hairstyleComboBox.getValue();
         Employee employee = employeeComboBox.getValue();
         Customer customer = customerComboBox.getValue();
@@ -76,6 +82,7 @@ public class BookingController {
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
                 showAlert("Success", "Booking successfully created!");
+                repository.markDateAsUnavailable(date);
             } else {
                 showAlert("Error", "Failed to create booking.");
             }
@@ -110,9 +117,8 @@ public class BookingController {
         }
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Current Bookings");
-        alert.setHeaderText(null);  // Remove the header
-        alert.setContentText(bookingsText.toString());  // Display the bookings text
+        alert.setHeaderText(null);
+        alert.setContentText(bookingsText.toString());
 
-        // Show the alert
         alert.showAndWait();
 }}

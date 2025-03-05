@@ -134,7 +134,7 @@ public class Repository {
     }
 
 
-    private boolean isDateAndTimeAvailable(String date, String time) {
+    public boolean isDateAndTimeAvailable(String date, String time) {
         String query = "SELECT * FROM bookings WHERE date = ? AND time = ?";
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
@@ -147,7 +147,7 @@ public class Repository {
         }
     }
 
-    private void markDateAsUnavailable(String date) {
+    public void markDateAsUnavailable(String date) {
         String query = "INSERT INTO unavailable_dates (date) VALUES (?)";
         try (Connection conn = getConnection();
              PreparedStatement statement = conn.prepareStatement(query)) {
